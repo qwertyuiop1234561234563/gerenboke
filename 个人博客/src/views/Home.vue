@@ -21,6 +21,15 @@
       <swiper-slide><img src="@/assets/img/fengjing6.jpg" alt="风景6"></swiper-slide>
     </swiper>
   </div>
+  <div class="bottom">
+    <div class="about">
+      <img src="" alt="头像">
+      <h3>忘记你</h3>
+    </div>
+    <div>
+      <p>蜉蝣一生，沧海一栗</p>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -73,7 +82,7 @@ const onSlideChange = () => {
 .swiper-container {
   width: 1335px;
   height: 760px;
-  margin-top: 90px;
+  /* margin-top: 90px; */
   position: relative;
 }
 
@@ -88,5 +97,8 @@ const onSlideChange = () => {
   object-fit: cover;
   border-radius: 10px;
   display: block;
+}
+.about{
+  display: flex;
 }
 </style>

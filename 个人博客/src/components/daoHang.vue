@@ -1,10 +1,10 @@
 <template>
     <div id="daoHang">
-       <RouterLink to="/">首页</RouterLink>
-       <RouterLink to="/xiangMu">项目</RouterLink>
-       <RouterLink to="/">博客</RouterLink>
-        <RouterLink to="/">经验</RouterLink>
-       <RouterLink to="/">其他</RouterLink>
+       <div class="c1"><RouterLink to="/"><p><i class="iconfont icon-home"></i>首页</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+       <div class="c1"><RouterLink to="/xiangmu"><p><i class="iconfont icon-home"></i>项目</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+       <div class="c1"><RouterLink to="/boke"><p><i class="iconfont icon-home"></i>博客</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+        <div class="c1"><RouterLink to="/"><p><i class="iconfont icon-home"></i>日记</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+       <div class="c1"><RouterLink to="/"><p><i class="iconfont icon-home"></i>其他</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
     </div>
 </template>
 <script setup lang="ts" name="daoHang">
@@ -16,15 +16,21 @@ import { RouterLink,RouterView } from 'vue-router';
         padding: 0;
         box-sizing: border-box;
     }
+    .c1{
+        display: flex;
+        justify-content: space-between;
+    }
     a{
-        display: block;
+        display: flex;
         padding: 10px auto;
         color: #333;
         text-decoration: none;
-        text-align: center;
+        text-align: left;
         width: 350px;
         height: 100px;
         line-height: 100px;
+        justify-content: space-between;
+        align-items: center;
     }
     a:hover{
         background-color: #0000007c;
@@ -34,6 +40,16 @@ import { RouterLink,RouterView } from 'vue-router';
         width: 350px;
         height: 600px;
         background-color: #f0f0f000;
-
+        display: flex;
+        flex-wrap: wrap;
+    }
+    i{
+        display: inline-block;
+        margin-right: 20px;
+        font-size: 30px;
+        margin-left: 10px;
+    }
+    p{
+        display: inline-block;
     }
 </style>
