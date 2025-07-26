@@ -1,7 +1,7 @@
 <template>
     <div id="daoHang">
        <RouterLink to="/">首页</RouterLink>
-       <RouterLink to="/">项目</RouterLink>
+       <RouterLink to="/xiangMu">项目</RouterLink>
        <RouterLink to="/">博客</RouterLink>
         <RouterLink to="/">经验</RouterLink>
        <RouterLink to="/">其他</RouterLink>
@@ -26,9 +26,13 @@ import { RouterLink,RouterView } from 'vue-router';
         height: 100px;
         line-height: 100px;
     }
+    a:hover{
+        background-color: #0000007c;
+        color: #ffffff;
+    }
     #daoHang{
         width: 350px;
-        height: 100%;
+        height: 600px;
         background-color: #f0f0f000;
 
     }
