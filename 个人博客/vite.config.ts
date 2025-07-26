@@ -17,4 +17,18 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server: {
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp'
+    }
+  },
+  optimizeDeps: {
+    // 关键：预构建shiki的WASM
+    include: ['shiki/esm/web'],
+  },
+  build: {
+    // 确保WASM被正确打包
+    assetsInlineLimit: 0
+  }
 })

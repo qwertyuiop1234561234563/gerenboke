@@ -10,4 +10,5 @@ declare module 'shiki' {
         scopeName: string
         aliases?: string[]
     }[]
+    export function setCDN(cdn: string): void
 }
