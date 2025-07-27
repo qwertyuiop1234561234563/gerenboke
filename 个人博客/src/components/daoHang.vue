@@ -3,7 +3,7 @@
        <div class="c1"><RouterLink to="/"><p><i class="iconfont icon-home"></i>首页</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
        <div class="c1"><RouterLink to="/xiangmu"><p><i class="iconfont icon-home"></i>项目</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
        <div class="c1"><RouterLink to="/boke"><p><i class="iconfont icon-home"></i>博客</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-        <div class="c1"><RouterLink to="/"><p><i class="iconfont icon-home"></i>日记</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+        <div class="c1"><RouterLink to="/diary"><p><i class="iconfont icon-home"></i>日记</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
        <div class="c1"><RouterLink to="/"><p><i class="iconfont icon-home"></i>其他</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
     </div>
 </template>

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { nanoid } from 'nanoid'
-export const usePostStore = defineStore('posts', () => {
+export const usePostStore = defineStore('dliarys', () => {
     const posts = ref([
         {
             id: 1,
