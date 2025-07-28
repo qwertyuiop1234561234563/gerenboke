@@ -16,6 +16,7 @@ import { RouterView } from 'vue-router';
 import Logo from './components/logo.vue';
 import DaoHang from './components/daoHang.vue';
 import Head from './components/head.vue';
+import '@/assets/main.css'
 </script>
 
 <style scoped>
@@ -27,7 +28,7 @@ import Head from './components/head.vue';
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  background-color: rgb(255, 255, 255);
+  
   display: flex;
   min-height: 100vh; /* 确保全高 */
 }
@@ -74,5 +75,28 @@ import Head from './components/head.vue';
   background: #919191 !important;
   width: 40px !important;
   border-radius: 4px !important;
+}
+/* src/assets/main.css */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #222222;
+    --primary-color: #42b983;
+}
+
+.dark {
+    --bg-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --primary-color: #66d3fa;
+}
+
+nav {
+    background-color: var(--bg-color);
+    color: var(--bg-color);
+    transition: background-color 0.3s, color 0.3s;
+    /* 平滑过渡 */
+}
+main{
+    background-color: var(--main-bg);
+    color: var(--text-color);
 }
 </style>

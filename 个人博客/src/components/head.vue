@@ -2,8 +2,8 @@
 <div class="head">
     <div class="me">
         <ul>
-            <li @click="aboutMe">个人简介</li>
-            <li><i class="iconfont icon-tianqi-qing"></i></li>
+            <li @click="aboutMe" id="person">个人简介</li>
+            <li @click="toggleTheme"><i :class=" !isDark ? 'iconfont icon-tianqi-qing':'iconfont icon-tianqi-ye' "></i></li>
         </ul>
     </div>
     <div class="about">
@@ -24,7 +24,7 @@
 </template>
 <script setup lang="ts" name="Head">
 import { RouterLink } from 'vue-router';
-import { ref } from 'vue';
+import { ref ,onMounted} from 'vue';
 const show = ref(false)
 const aboutMe = () => {
     show.value = true;
@@ -34,12 +34,35 @@ const hide = () => {
         show.value = false;
     }, 900)
 }
+
+const isDark = ref(false)
+
+onMounted(() => {
+  isDark.value = localStorage.getItem('theme') === 'dark'
+  updateTheme()
+})
+
+const toggleTheme = () => {
+  isDark.value = !isDark.value
+  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+  updateTheme()
+}
+
+const updateTheme = () => {
+  document.documentElement.classList.toggle('dark', isDark.value)
+}
 </script>
 <style scoped>
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+#person{
+    transition: all 1s;
+}
+#person:hover{
+    font-size: larger;
 }
 .slide-enter-active,
 .slide-leave-active {
@@ -52,7 +75,12 @@ const hide = () => {
 h4{
     height: 50px;
 }
-
+ul i {
+    transition: all 1s;
+}
+ul i :hover{
+    font-size: larger;
+}
 i{
     font-size: 30px;
     cursor: pointer;
@@ -67,6 +95,7 @@ i{
     width: 300px;
     height: 100%;
     background-color: #ffffff;
+    color: rgb(53, 53, 53);
     padding: 20px;
     border-radius: 10px;
     border: 1px solid rgba(0, 0, 0, 0.1);

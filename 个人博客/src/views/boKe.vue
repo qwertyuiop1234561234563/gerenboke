@@ -24,7 +24,7 @@ const{posts} = storeToRefs(postStore)
 
 
 <style scoped>
- @import 'github-markdown-css/github-markdown-dark.css'; 
+ /* @import 'github-markdown-css/github-markdown-dark.css';  */
 
 .markdown-body {
   padding: 20px;
@@ -38,8 +38,8 @@ li{
 }
 a{
   text-decoration: none;
-  color: rgb(61, 35, 50);
-  font-size: 1.2rem;
+  color:inherit !important;
+  font-size : 1.2rem;
 }
 a:hover{
   background-color: rgb(146, 146, 146);

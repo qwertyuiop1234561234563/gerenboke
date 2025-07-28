@@ -8,6 +8,13 @@
 
 </script>
 <style scoped>
+i{
+    transition: all 1s;
+}
+i:hover{
+    background-color: rgb(255, 255, 255);
+    color: #000;
+}
 .iconfont{
     font-size: 40px;
     margin-right: 10px;

@@ -1,20 +1,30 @@
 <template>
     <div id="daoHang">
-       <div class="c1"><RouterLink to="/"><p><i class="iconfont icon-home"></i>首页</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-       <div class="c1"><RouterLink to="/xiangmu"><p><i class="iconfont icon-home"></i>项目</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-       <div class="c1"><RouterLink to="/boke"><p><i class="iconfont icon-home"></i>博客</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-        <div class="c1"><RouterLink to="/diary"><p><i class="iconfont icon-home"></i>日记</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-       <div class="c1"><RouterLink to="/"><p><i class="iconfont icon-home"></i>其他</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+       <div class="c1" ><RouterLink to="/":class="{'active':a==='home'}" @click="setActive('home')"><p><i class="iconfont icon-home"></i>首页</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+       <div class="c1" ><RouterLink to="/xiangmu":class="{'active':a==='xiangmu'}" @click="setActive('xiangmu')"><p><i class="iconfont icon-home"></i>项目</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+       <div class="c1" ><RouterLink to="/boke":class="{'active':a==='boke'}" @click="setActive('boke')"><p><i class="iconfont icon-home"></i>博客</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+        <!-- <div class="c1" ><RouterLink to="/diary":class="{'active':a==='diary'}" @click="setActive('diary')"><p><i class="iconfont icon-home"></i>日记</p><i class="iconfont icon-icon-test3"></i></RouterLink></div> -->
+       <div class="c1" ><RouterLink to="/":class="{'active':a==='about'}" @click="setActive('about')"><p><i class="iconfont icon-home"></i>其他</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
     </div>
 </template>
 <script setup lang="ts" name="daoHang">
 import { RouterLink,RouterView } from 'vue-router';
+import { ref } from 'vue';
+const a=ref('home')
+function setActive(e:string){
+    a.value=e
+}
 </script>
 <style scoped>
     *{
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+    }
+    
+    .active{
+        background-color: #0000007c;
+        color: #ffffff;
     }
     .c1{
         display: flex;
@@ -23,7 +33,7 @@ import { RouterLink,RouterView } from 'vue-router';
     a{
         display: flex;
         padding: 10px auto;
-        color: #333;
+        color: #6dcaff;
         text-decoration: none;
         text-align: left;
         width: 350px;

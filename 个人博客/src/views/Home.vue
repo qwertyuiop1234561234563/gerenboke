@@ -13,17 +13,17 @@
       @swiper="onSwiper"
       @slideChange="onSlideChange"
     >
-      <swiper-slide><img src="@/assets/img/fengjing1.jpg" alt="风景1"></swiper-slide>
+      <swiper-slide><img src="@/assets/img/fg1.jpg" alt="风景1"></swiper-slide>
       <swiper-slide><img src="@/assets/img/fengjing2.jpg" alt="风景2"></swiper-slide>
       <swiper-slide><img src="@/assets/img/fengjing3.jpg" alt="风景3"></swiper-slide>
-      <swiper-slide><img src="@/assets/img/fengjing4.jpg" alt="风景4"></swiper-slide>
+      <swiper-slide><img src="@/assets/img/fg2.jpg" alt="风景4"></swiper-slide>
       <swiper-slide><img src="@/assets/img/fengjing5.jpg" alt="风景5"></swiper-slide>
       <swiper-slide><img src="@/assets/img/fengjing6.jpg" alt="风景6"></swiper-slide>
     </swiper>
   </div>
   <div class="bottom">
     <div class="about">
-      <img src="" alt="头像">
+      <img src="@/assets/img/touXiang.jpg" alt="头像">
       <h3>忘记你</h3>
     </div>
     <div>
@@ -101,4 +101,13 @@ const onSlideChange = () => {
 .about{
   display: flex;
 }
+.about img{
+  
+    border-radius: 50%;
+    height: 60px;
+}
+.bottom{
+  margin-left: 20px;
+}
+
 </style>
