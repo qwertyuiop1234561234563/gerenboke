@@ -1,30 +1,38 @@
 <template>
-<div class="post">
-    <h1>{{ post.title }}</h1>
-    <div class="content markdown-body" v-html="htmlContent"></div>
-    <RouterLink to="/boKe">← 返回列表</RouterLink>
-  </div>
+<article v-if="post">
+    <header>
+      <h1>{{ post.meta.title }}</h1>
+      <img 
+        v-if="post.meta.cover" 
+        :src="post.meta.cover" 
+        alt="封面图"
+      >
+    </header>
+    
+    <div 
+      class="markdown-body" 
+      v-html="post.content"
+    ></div>
+    <RouterLink to="/boke">返回</RouterLink>
+  </article>
 </template>
 <script setup lang="ts" name="posts">
-import { computed,ref ,onMounted} from 'vue'
-import { useRoute } from 'vue-router'
-import { usePostStore } from '@/stores/posts'
+import { ref ,onMounted} from 'vue'
+import { useRoute ,RouterLink} from 'vue-router'
 import { parseMarkdown } from '@/utils/markdown'
 
-const route = useRoute()
-const postStore = usePostStore()
 
-const post = computed(() => {
-  return postStore.posts.find(p => p.id === Number(route.params.id)) || {
-    title: '文章不存在',
-    content: '请检查URL是否正确'
-  }
-})
-const htmlContent=ref('')
+const route = useRoute()
+const post = ref<{
+  meta: any
+  content: string
+}>()
 
 onMounted(async () => {
-    htmlContent.value = await parseMarkdown(post.value.content)
-    })
+  const id = route.params.id
+  const path = `/src/articles/${id}.md`
+  post.value = await parseMarkdown(path)
+})
 </script>
 <style scoped>
 .post {
@@ -32,7 +40,18 @@ onMounted(async () => {
   margin: 0 auto;
   padding: 20px;
 }
+h1{
+  text-align: center;
+  font-size: 50px;
+}
 .markdown-body {
   margin-top: 20px;
+  margin-left: 20px;
+  font-size: 20px;
+}
+a{
+  text-decoration: none;
+  color: brown;
+  font-size: 30px;
 }
 </style>

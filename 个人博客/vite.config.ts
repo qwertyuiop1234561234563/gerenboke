@@ -12,6 +12,7 @@ export default defineConfig({
     vueDevTools(),
     VueSetupExtend(),
   ],
+  assetsInclude: ['**/*.md'],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -21,11 +22,14 @@ export default defineConfig({
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin',
       'Cross-Origin-Embedder-Policy': 'require-corp'
+    },
+    fs: {
+      strict: false
     }
   },
   optimizeDeps: {
     // 关键：预构建shiki的WASM
-    include: ['shiki/esm/web'],
+    include: ['shiki/esm/web', 'gray-matter'],
   },
   build: {
     // 确保WASM被正确打包

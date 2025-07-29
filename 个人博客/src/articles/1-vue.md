@@ -1,3 +1,18 @@
+---
+title: "制作个人博客系统"
+date: 2025-07-28 09:45
+tags: ["vue", "前端"]
+cover: "/images/vue-cover.jpg"
+---
+## 为什么要做个人博客
+- 主要是想在这上面发表一些自己的文章
+- 也想分享一些自己在生活中遇到的一些趣事
+- 后续也会开通评论系统，大家也可以发表一些自己的见解
+
+## 主要问题
+1.主要没用过markdown所以导致自己没有思路，如何去渲染以下是求助deepseek再加上自己的修改写的将markdown转变为html的工具
+
+```javascript
 // src/utils/markdown.ts
 import { marked } from 'marked'
 import frontMatter from 'front-matter'
@@ -46,10 +61,19 @@ export const parseMarkdown = async (filePath: string): Promise<ParsedMarkdown> =
         return {
             meta: {
                 title: '解析失败',
-                date: '1970-01-01',
+                date: '0000-00-00',
                 tags: []
             },
             content: '<p>文章加载失败</p >'
         }
     }
 }
+```
+2.问题2
+```javascript
+onMounted(async () => {
+  const id = route.params.id
+  const path = `/src/articles/${id}.md`
+  post.value = await parseMarkdown(path)
+})
+```

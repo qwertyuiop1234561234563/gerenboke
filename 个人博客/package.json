@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@highlightjs/vue-plugin": "^2.1.0",
+    "front-matter": "^4.0.2",
     "github-markdown-css": "^5.8.1",
+    "gray-matter": "^4.0.3",
     "highlight.js": "^11.11.1",
     "marked": "^4.3.0",
     "nanoid": "^5.1.5",
