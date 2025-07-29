@@ -13,7 +13,7 @@
     </div>
     <transition name="slide" mode="out-in" @mouseleave="hide">
         <div v-if="show" class="about-me">
-            <img src="@/assets/img/touXiang.jpg" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;">
+            <img src="@/assets/img/touxiang.jpg" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;">
             <h3>王继毅</h3>
             <h4>男</h4>
             <h4>微信号：w18781663225</h4>
