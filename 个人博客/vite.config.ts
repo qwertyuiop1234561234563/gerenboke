@@ -34,12 +34,5 @@ export default defineConfig({
   build: {
     // 确保WASM被正确打包
     assetsInlineLimit: 0,
-    outDir: '个人博客/dist',
-    emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        assetFileNames: 'assets/[name].[hash].[ext]'
-      }
-    }
   }
 })
