@@ -23,7 +23,7 @@
   </div>
   <div class="bottom">
     <div class="about">
-      <img src="@/assets/img/touXiang.jpg" alt="头像">
+      <img src="@/assets/img/touxiang.jpg" alt="头像">
       <h3>忘记你</h3>
     </div>
     <div>
