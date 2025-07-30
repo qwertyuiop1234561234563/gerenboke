@@ -27,6 +27,7 @@ export default defineConfig({
       strict: false
     }
   },
+  publicDir: 'src/articles',
   optimizeDeps: {
     // 关键：预构建shiki的WASM
     include: ['shiki/esm/web', 'gray-matter'],
@@ -34,5 +35,10 @@ export default defineConfig({
   build: {
     // 确保WASM被正确打包
     assetsInlineLimit: 0,
+    rollupOptions: {
+      output: {
+        assetFileNames: 'assets/[name].[hash].[ext]'
+      }
+    }
   }
 })
