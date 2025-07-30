@@ -1,8 +1,7 @@
 ---
 title: "制作个人博客系统"
-date: 2025-07-28 09:45
+date: 2025-07-28 
 tags: ["vue", "前端"]
-cover: "/images/vue-cover.jpg"
 ---
 ## 为什么要做个人博客
 - 主要是想在这上面发表一些自己的文章
@@ -23,7 +22,14 @@ interface FrontMatterAttributes {
     tags?: string[];
     [key: string]: any;
 }
-
+declare module 'front-matter' {
+    interface FrontMatterAttributes {
+        title: string
+        date: string
+        tags?: string[]
+        cover?: string
+    }
+}
 interface ParsedMarkdown {
     meta: {
         title: string;
@@ -33,83 +39,174 @@ interface ParsedMarkdown {
     content: string;
 }
 
-export const parseMarkdown = async (url: string): Promise<ParsedMarkdown> => {
+
+export const parseMarkdown = async (rawContent: string): Promise<ParsedMarkdown> => {
     try {
-        // ✅ 关键修改1：添加请求日志
-        console.log('正在请求Markdown:', url);
+        // ✅ 类型安全的解析
+        const parsed = frontMatter<FrontMatterAttributes>(rawContent);
 
-        const response = await fetch(url);
-        if (!response.ok) {
-            console.error('请求失败:', response.status);
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const text = await response.text();
-        // ✅ 关键修改2：添加原始内容日志
-        console.log('获取到原始内容:', text.slice(0, 100) + '...');
-
-        const parsed = frontMatter<FrontMatterAttributes>(text);
-        // ✅ 关键修改3：添加解析结果日志
-        console.log('解析后的meta:', parsed.attributes);
+        // 调试日志
+        console.log('解析结果:', {
+            title: parsed.attributes.title,
+            date: parsed.attributes.date,
+            tags: parsed.attributes.tags
+        });
 
         return {
             meta: {
-                title: parsed.attributes.title || '无标题',
-                date: parsed.attributes.date || new Date().toISOString(),
-                tags: parsed.attributes.tags || [],
+                title: parsed.attributes.title || '默认标题',
+                date: parsed.attributes.date || new Date().toISOString().split('T')[0],
+                tags: Array.isArray(parsed.attributes.tags) ? parsed.attributes.tags : [],
+
             },
-            content: marked.parse(parsed.body),
+            content: marked.parse(parsed.body)
         };
     } catch (error) {
-        console.error(`解析Markdown失败: ${url}`, error);
+        console.error('Markdown解析失败:', error);
         return {
             meta: {
                 title: '解析失败',
-                date: new Date().toISOString(),
+                date: new Date().toISOString().split('T')[0],
                 tags: ['错误'],
+
             },
-            content: '<p>文章加载失败</p>',
+            content: '<p>文章加载失败</p>'
         };
     }
 };
 ```
 2.问题2
 ```javascript
+interface PostItem {
+  id: string;
+  meta: {
+    title: string;
+    date: string;
+    tags: string[];
+  };
+}
+declare module 'front-matter' {
+  interface FrontMatterAttributes {
+    title: string
+    date: string
+    tags?: string[]
+    cover?: string
+    [key: string]: any  // 允许其他自定义字段
+  }
+}
+
+const posts = ref<PostItem[]>([]);
+const hoverActive = ref<string | null>(null);
+
+// 日期格式化
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('zh-CN');
+};
+
 onMounted(async () => {
   try {
-    // ✅ 使用正确的路径映射
-    const modules = import.meta.glob('/public/articles/*.md', { 
-      as: 'url',
-      import: 'default'
+    const modules = import.meta.glob('/public/articles/*.md', {
+      as: 'raw',
+      eager: true
     });
 
-    const loadingPromises = Object.entries(modules).map(async ([path, getUrl]) => {
-      const url = await getUrl();
+    // ✅ 使用Promise.all处理异步解析
+    const postPromises = Object.entries(modules).map(async ([path, content]) => {
       const id = path.split('/').pop()?.replace('.md', '') || '';
-      
-      // ✅ 添加请求日志
-      console.log(`正在处理文章: ${id}`, url);
-      
-      const { meta } = await parseMarkdown(url);
-      return { id, meta };
+      try {
+        const parsed = await parseMarkdown(content); // 等待解析完成
+        return {
+          id,
+          meta: {
+            title: parsed.meta.title,
+            date: parsed.meta.date,
+            tags: parsed.meta.tags,
+          }
+        };
+      } catch (err) {
+        console.error(`文章 ${id} 解析失败:`, err);
+        return {
+          id,
+          meta: {
+            title: `解析失败: ${id}`,
+            date: '1970-01-01',
+            tags: [],
+            cover: ''
+          }
+        };
+      }
     });
 
-    posts.value = await Promise.all(loadingPromises);
-    posts.value.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+    const loadedPosts = await Promise.all(postPromises);
     
-    // ✅ 打印最终结果
-    console.log('加载完成的文章列表:', posts.value);
-  } catch (error) {
-    console.error('加载文章列表失败:', error);
+    posts.value = loadedPosts
+      .filter(post => !post.meta.title.includes('解析失败'))
+      .sort((a, b) => 
+        new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime()
+      );
+      
+  } catch (err) {
+    console.error('初始化加载失败:', err);
   }
 });
-
 ```
 3.
 ```javascript
+const post = ref<{
+  meta: {
+    title: string
+    date: string
+    tags?: string[]
+    cover?: string
+  }
+  content: string
+}>()
+const loading = ref(true)
+const error = ref(false)
+
+// 日期格式化
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+}
+
+// 处理图片路径
+const getImageUrl = (path: string) => {
+  // 如果是网络图片直接返回
+  if (path.startsWith('http')) return path
+  
+  // 本地图片从public目录获取
+  return `/articles/${path}`
+}
+
 onMounted(async () => {
-  const id = route.params.id
-  const path = `/public/articles/${id}.md`
-  post.value = await parseMarkdown(path)
+  try {
+    const id = route.params.id
+    
+    // ✅ 方案C：统一使用import.meta.glob获取
+    const modules = import.meta.glob('/public/articles/*.md', { 
+      as: 'raw',
+      eager: true
+    })
+    
+    const path = `/public/articles/${id}.md`
+    const content = modules[path]
+    
+    if (!content) {
+      throw new Error(`找不到文章: ${id}`)
+    }
+
+    post.value = await parseMarkdown(content)
+    console.log('加载完成:', post.value)
+    
+  } catch (err) {
+    console.error('加载失败:', err)
+    error.value = true
+  } finally {
+    loading.value = false
+  }
 })
 ```

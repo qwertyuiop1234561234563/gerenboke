@@ -23,7 +23,7 @@
 import { parseMarkdown } from '@/utils/markdown';
 import { RouterLink } from 'vue-router';
 import { ref, onMounted } from 'vue';
-
+import frontMatter from 'front-matter';
 interface PostItem {
   id: string;
   meta: {
@@ -31,6 +31,15 @@ interface PostItem {
     date: string;
     tags: string[];
   };
+}
+declare module 'front-matter' {
+  interface FrontMatterAttributes {
+    title: string
+    date: string
+    tags?: string[]
+    cover?: string
+    [key: string]: any  // 允许其他自定义字段
+  }
 }
 
 const posts = ref<PostItem[]>([]);
@@ -41,33 +50,50 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('zh-CN');
 };
 
-// 获取文章列表
 onMounted(async () => {
   try {
-    // ✅ 使用正确的路径映射
-    const modules = import.meta.glob('/public/articles/*.md', { 
-      as: 'url',
-      import: 'default'
+    const modules = import.meta.glob('/public/articles/*.md', {
+      as: 'raw',
+      eager: true
     });
 
-    const loadingPromises = Object.entries(modules).map(async ([path, getUrl]) => {
-      const url = await getUrl();
+    // ✅ 使用Promise.all处理异步解析
+    const postPromises = Object.entries(modules).map(async ([path, content]) => {
       const id = path.split('/').pop()?.replace('.md', '') || '';
-      
-      // ✅ 添加请求日志
-      console.log(`正在处理文章: ${id}`, url);
-      
-      const { meta } = await parseMarkdown(url);
-      return { id, meta };
+      try {
+        const parsed = await parseMarkdown(content); // 等待解析完成
+        return {
+          id,
+          meta: {
+            title: parsed.meta.title,
+            date: parsed.meta.date,
+            tags: parsed.meta.tags,
+          }
+        };
+      } catch (err) {
+        console.error(`文章 ${id} 解析失败:`, err);
+        return {
+          id,
+          meta: {
+            title: `解析失败: ${id}`,
+            date: '1970-01-01',
+            tags: [],
+            cover: ''
+          }
+        };
+      }
     });
 
-    posts.value = await Promise.all(loadingPromises);
-    posts.value.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+    const loadedPosts = await Promise.all(postPromises);
     
-    // ✅ 打印最终结果
-    console.log('加载完成的文章列表:', posts.value);
-  } catch (error) {
-    console.error('加载文章列表失败:', error);
+    posts.value = loadedPosts
+      .filter(post => !post.meta.title.includes('解析失败'))
+      .sort((a, b) => 
+        new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime()
+      );
+      
+  } catch (err) {
+    console.error('初始化加载失败:', err);
   }
 });
 </script>
