@@ -37,7 +37,7 @@ export default defineConfig({
     assetsInlineLimit: 0,
     rollupOptions: {
       output: {
-        assetFileNames: 'assets/[name].[hash].[ext]'
+        assetFileNames: 'assets/articles/[name].[hash].[ext]'
       }
     }
   }

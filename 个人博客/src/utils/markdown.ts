@@ -1,55 +1,59 @@
 // src/utils/markdown.ts
-import { marked } from 'marked'
-import frontMatter from 'front-matter'
+import { marked } from 'marked';
+import frontMatter from 'front-matter';
 
-// 定义Front Matter的类型
 interface FrontMatterAttributes {
-    title: string
-    date: string
-    tags?: string[]
-    [key: string]: any // 允许其他自定义字段
+    title: string;
+    date: string;
+    tags?: string[];
+    [key: string]: any;
 }
 
-// 定义返回类型
 interface ParsedMarkdown {
     meta: {
-        title: string
-        date: string
-        tags: string[]
-    }
-    content: string
+        title: string;
+        date: string;
+        tags: string[];
+    };
+    content: string;
 }
 
-export const parseMarkdown = async (filePath: string): Promise<ParsedMarkdown> => {
+export const parseMarkdown = async (url: string): Promise<ParsedMarkdown> => {
     try {
-        // 1. 动态加载Markdown文件内容
-        const module = await import(/* @viteIgnore */ filePath)
-        const response = await fetch(module.default)
-        const text = await response.text()
+        // ✅ 关键修改1：添加请求日志
+        console.log('正在请求Markdown:', url);
 
-        // 2. 使用类型安全的解析
-        const parsed = frontMatter<FrontMatterAttributes>(text)
+        const response = await fetch(url);
+        if (!response.ok) {
+            console.error('请求失败:', response.status);
+            throw new Error(`HTTP ${response.status}`);
+        }
 
-        // 3. 转换Markdown为HTML
-        const html = marked.parse(parsed.body)
+        const text = await response.text();
+        // ✅ 关键修改2：添加原始内容日志
+        console.log('获取到原始内容:', text.slice(0, 100) + '...');
+
+        const parsed = frontMatter<FrontMatterAttributes>(text);
+        // ✅ 关键修改3：添加解析结果日志
+        console.log('解析后的meta:', parsed.attributes);
 
         return {
             meta: {
                 title: parsed.attributes.title || '无标题',
-                date: parsed.attributes.date || '1970-01-01',
-                tags: parsed.attributes.tags || []
+                date: parsed.attributes.date || new Date().toISOString(),
+                tags: parsed.attributes.tags || [],
             },
-            content: html
-        }
+            content: marked.parse(parsed.body),
+        };
     } catch (error) {
-        console.error(`解析失败: ${filePath}`, error)
+        console.error(`解析Markdown失败: ${url}`, error);
         return {
             meta: {
                 title: '解析失败',
-                date: '1970-01-01',
-                tags: []
+                date: new Date().toISOString(),
+                tags: ['错误'],
             },
-            content: '<p>文章加载失败</p >'
-        }
+            content: '<p>文章加载失败</p>',
+        };
     }
-}
+};
