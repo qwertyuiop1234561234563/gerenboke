@@ -30,7 +30,7 @@ const post = ref<{
 
 onMounted(async () => {
   const id = route.params.id
-  const path = `/src/articles/${id}.md`
+  const path = `/public/articles/${id}.md`
   post.value = await parseMarkdown(path)
 })
 </script>

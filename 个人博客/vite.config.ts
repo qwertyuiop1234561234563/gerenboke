@@ -27,7 +27,7 @@ export default defineConfig({
       strict: false
     }
   },
-  publicDir: 'src/articles',
+  publicDir: 'public/articles',
   optimizeDeps: {
     // 关键：预构建shiki的WASM
     include: ['shiki/esm/web', 'gray-matter'],

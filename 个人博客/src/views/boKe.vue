@@ -31,7 +31,7 @@ const posts = ref<PostItem[]>([])
 // 获取文章列表
 onMounted(async () => {
   // 获取所有Markdown文件
-  const modules = import.meta.glob('/src/articles/*.md')
+  const modules = import.meta.glob('/public/articles/*.md')
   
   // 并行加载所有文章
   const loadingPromises = Object.keys(modules).map(async (path) => {
