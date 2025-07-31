@@ -135,6 +135,7 @@ h1 {
 
 .markdown-body {
   line-height: 1.6;
+  font-size: larger;
 }
 
 .back-link {
