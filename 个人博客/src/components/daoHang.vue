@@ -1,9 +1,9 @@
 <template>
     <div id="daoHang">
        <div class="c1" ><RouterLink to="/":class="{'active':a==='home'}" @click="setActive('home')"><p><i class="iconfont icon-home"></i>首页</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-       <div class="c1" ><RouterLink to="/xiangmu":class="{'active':a==='xiangmu'}" @click="setActive('xiangmu')"><p><i class="iconfont icon-home"></i>项目</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-       <div class="c1" ><RouterLink to="/boke":class="{'active':a==='boke'}" @click="setActive('boke')"><p><i class="iconfont icon-home"></i>博客</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-       <div class="c1" ><RouterLink to="/about":class="{'active':a==='about'}" @click="setActive('about')"><p><i class="iconfont icon-home"></i>其他</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+       <div class="c1" ><RouterLink to="/xiangmu":class="{'active':a==='xiangmu'}" @click="setActive('xiangmu')"><p><i class="iconfont icon-github-fill"></i>项目</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+       <div class="c1" ><RouterLink to="/boke":class="{'active':a==='boke'}" @click="setActive('boke')"><p><i class="iconfont icon-icon-test"></i>博客</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
+       <div class="c1" ><RouterLink to="/about":class="{'active':a==='about'}" @click="setActive('about')"><p><i class="iconfont icon-menu"></i>其他</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
     </div>
 </template>
 <script setup lang="ts" name="daoHang">
