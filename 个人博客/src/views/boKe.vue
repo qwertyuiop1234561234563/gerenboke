@@ -1,5 +1,25 @@
 <template>
   <div class="blog-container">
+    <!-- 标签筛选区 -->
+    <div class="tag-filter">
+      <span 
+        v-for="tag in allTags" 
+        :key="tag"
+        @click="toggleTag(tag)"
+        :class="{ 'active': activeTags.includes(tag) }"
+        class="tag"
+      >
+        {{ tag }} ({{ tagCounts[tag] }})
+      </span>
+      <span 
+        v-if="activeTags.length" 
+        @click="clearTags"
+        class="clear-tags"
+      >
+        清除筛选
+      </span>
+    </div>
+
     <!-- 搜索框 -->
     <div class="search-box">
       <input
@@ -21,13 +41,23 @@
         <div class="meta">
           <span class="date">{{ formatDate(article.meta.date) }}</span>
           <span class="tags">
-            <span v-for="tag in article.meta.tags" :key="tag" class="tag">
+            <span 
+              v-for="tag in article.meta.tags" 
+              :key="tag" 
+              class="tag"
+              @click.stop="toggleTag(tag)"
+            >
               {{ tag }}
             </span>
           </span>
         </div>
         <p class="excerpt">{{ getExcerpt(article.content) }}</p>
       </RouterLink>
+    </div>
+
+    <!-- 空状态 -->
+    <div v-if="!filteredArticles.length && !loading" class="empty">
+      没有找到匹配的文章
     </div>
 
     <!-- 加载状态 -->
@@ -38,12 +68,13 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { loadAllArticles,type Article } from '@/utils/loader';
+import { loadAllArticles, type Article } from '@/utils/loader';
 import { debounce } from 'lodash-es';
 
 // 状态管理
-const articles = ref<Article[]>([]);
 const searchQuery = ref('');
+const activeTags = ref<string[]>([]);
+const articles = ref<Article[]>([]);
 const loading = ref(true);
 const error = ref(false);
 
@@ -59,32 +90,75 @@ onMounted(async () => {
   }
 });
 
-// 搜索功能
-const filteredArticles = computed(() => {
-  if (!searchQuery.value.trim()) return articles.value;
-
-  const query = searchQuery.value.toLowerCase();
-  return articles.value.filter(article => {
-    return (
-      article.meta.title.toLowerCase().includes(query) ||
-      article.content.toLowerCase().includes(query)
-    );
+// 获取所有标签及其计数
+const tagCounts = computed(() => {
+  const counts: Record<string, number> = {};
+  articles.value.forEach(article => {
+    article.meta.tags?.forEach(tag => {
+      counts[tag] = (counts[tag] || 0) + 1;
+    });
   });
+  return counts;
 });
 
-const handleSearch = debounce(() => {
-  // 防抖处理
-}, 300);
+// 获取所有不重复的标签（按数量排序）
+const allTags = computed(() => {
+  return Object.keys(tagCounts.value).sort((a, b) => tagCounts.value[b] - tagCounts.value[a]);
+});
 
-// 辅助方法
+// 日期格式化
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('zh-CN');
 };
 
+// 获取文章摘要
 const getExcerpt = (content: string, length = 150) => {
   const plainText = content.replace(/<[^>]*>/g, ' ');
   return plainText.substring(0, length) + (plainText.length > length ? '...' : '');
 };
+
+// 标签操作
+const toggleTag = (tag: string) => {
+  const index = activeTags.value.indexOf(tag);
+  if (index === -1) {
+    activeTags.value.push(tag);
+  } else {
+    activeTags.value.splice(index, 1);
+  }
+};
+
+const clearTags = () => {
+  activeTags.value = [];
+};
+
+// 搜索防抖
+const handleSearch = debounce(() => {}, 300);
+
+// 筛选文章（结合搜索和标签）
+const filteredArticles = computed(() => {
+  let result = articles.value;
+  
+  // 标签筛选
+  if (activeTags.value.length) {
+    result = result.filter(article => 
+      activeTags.value.every(tag => article.meta.tags?.includes(tag))
+    );
+  }
+  
+  // 搜索筛选
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase();
+    result = result.filter(article => 
+      article.meta.title.toLowerCase().includes(query) ||
+      article.content.toLowerCase().includes(query)
+    );
+  }
+  
+  // 按日期排序
+  return result.sort((a, b) => 
+    new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime()
+  );
+});
 </script>
 
 <style scoped>
@@ -92,6 +166,40 @@ const getExcerpt = (content: string, length = 150) => {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.tag-filter {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.tag {
+  padding: 4px 12px;
+  background: #f0f0f0;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.tag:hover {
+  background: #ddd;
+}
+
+.tag.active {
+  background: #42b983;
+  color: white;
+}
+
+.clear-tags {
+  margin-left: 10px;
+  color: #666;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
 }
 
 .search-box {
@@ -117,6 +225,8 @@ const getExcerpt = (content: string, length = 150) => {
   border: 1px solid #eee;
   border-radius: 8px;
   transition: all 0.3s;
+  text-decoration: none;
+  color: inherit;
 }
 
 .article-card:hover {
@@ -135,17 +245,13 @@ const getExcerpt = (content: string, length = 150) => {
   margin-bottom: 10px;
   font-size: 14px;
   color: #666;
+  align-items: center;
 }
 
 .tags {
   display: flex;
   gap: 8px;
-}
-
-.tag {
-  padding: 2px 8px;
-  background: #f0f0f0;
-  border-radius: 4px;
+  flex-wrap: wrap;
 }
 
 .excerpt {
@@ -154,6 +260,7 @@ const getExcerpt = (content: string, length = 150) => {
   line-height: 1.6;
 }
 
+.empty,
 .loading,
 .error {
   text-align: center;
