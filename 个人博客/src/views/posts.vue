@@ -1,159 +1,124 @@
 <template>
-  <div class="post-detail">
-    <article v-if="post">
+  <div class="post-container">
+    <div v-if="loading" class="loading">加载中...</div>
+    <div v-else-if="error" class="error">文章加载失败</div>
+    <article v-else-if="article">
       <header>
-        <h1>{{ post.meta.title }}</h1>
-        <p class="meta">
-          <time :datetime="post.meta.date">{{ formatDate(post.meta.date) }}</time>
-          <span class="tags" v-if="post.meta.tags?.length">
-            · 标签：<span v-for="tag in post.meta.tags" :key="tag">{{ tag }}</span>
+        <h1>{{ article.meta.title }}</h1>
+        <div class="meta">
+          <time :datetime="article.meta.date">{{ formatDate(article.meta.date) }}</time>
+          <span class="tags">
+            <span v-for="tag in article.meta.tags" :key="tag" class="tag">
+              {{ tag }}
+            </span>
           </span>
-        </p>
-        <img 
-          v-if="post.meta.cover" 
-          :src="getImageUrl(post.meta.cover)" 
-          alt="封面图"
-          class="cover"
-        >
+        </div>
       </header>
-      
-      <section 
-        class="markdown-body" 
-        v-html="post.content"
-      ></section>
+
+      <div class="content" v-html="article.html"></div>
 
       <footer>
         <RouterLink to="/boke" class="back-link">← 返回列表</RouterLink>
       </footer>
     </article>
-
-    <div v-else-if="loading" class="loading">加载中...</div>
-    <div v-else class="error">文章加载失败，请检查链接</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
-import { parseMarkdown } from '@/utils/markdown'
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { loadArticleById,type Article } from '@/utils/loader';
+import { marked } from 'marked';
 
-const route = useRoute()
-const post = ref<{
-  meta: {
-    title: string
-    date: string
-    tags?: string[]
-    cover?: string
+const route = useRoute();
+const article = ref<Article | null>(null);
+const loading = ref(true);
+const error = ref(false);
+
+onMounted(async () => {
+  try {
+    const id = route.params.id as string;
+    article.value = await loadArticleById(id);
+    
+    // 如果有代码高亮需求
+    // document.querySelectorAll('pre code').forEach((block) => {
+    //   hljs.highlightElement(block);
+    // });
+  } catch (err) {
+    console.error('加载文章失败:', err);
+    error.value = true;
+  } finally {
+    loading.value = false;
   }
-  content: string
-}>()
-const loading = ref(true)
-const error = ref(false)
+});
 
-// 日期格式化
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
-  })
-}
-
-// 处理图片路径
-const getImageUrl = (path: string) => {
-  // 如果是网络图片直接返回
-  if (path.startsWith('http')) return path
-  
-  // 本地图片从public目录获取
-  return `/articles/${path}`
-}
-
-onMounted(async () => {
-  try {
-    const id = route.params.id
-    
-    // ✅ 方案C：统一使用import.meta.glob获取
-    const modules = import.meta.glob('/public/articles/*.md', { 
-      as: 'raw',
-      eager: true
-    })
-    
-    const path = `/public/articles/${id}.md`
-    const content = modules[path]
-    
-    if (!content) {
-      throw new Error(`找不到文章: ${id}`)
-    }
-
-    post.value = await parseMarkdown(content)
-    console.log('加载完成:', post.value)
-    
-  } catch (err) {
-    console.error('加载失败:', err)
-    error.value = true
-  } finally {
-    loading.value = false
-  }
-})
+  });
+};
 </script>
 
 <style scoped>
-.post-detail {
+.post-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 20px;
+}
+
+article {
+  line-height: 1.6;
 }
 
 header {
-  margin-bottom: 2rem;
+  margin-bottom: 30px;
 }
 
 h1 {
   font-size: 2rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 10px;
 }
 
 .meta {
+  display: flex;
+  gap: 15px;
   color: #666;
-  margin-bottom: 1.5rem;
+  margin-bottom: 20px;
 }
 
-.tags span {
-  margin-right: 0.5rem;
-  padding: 0.2rem 0.5rem;
+.tags {
+  display: flex;
+  gap: 8px;
+}
+
+.tag {
+  padding: 2px 8px;
   background: #f0f0f0;
   border-radius: 4px;
+  font-size: 14px;
 }
 
-.cover {
-  width: 100%;
-  max-height: 400px;
-  object-fit: cover;
-  margin: 1rem 0;
-  border-radius: 8px;
-}
-
-.markdown-body {
-  line-height: 1.6;
-  font-size: larger;
+.content {
+  margin-bottom: 40px;
 }
 
 .back-link {
   display: inline-block;
-  margin-top: 2rem;
-  color: #4a6fa5;
+  margin-top: 30px;
+  color: #42b983;
   text-decoration: none;
-  transition: color 0.3s;
 }
 
 .back-link:hover {
-  color: #2c5282;
+  text-decoration: underline;
 }
 
 .loading,
 .error {
   text-align: center;
-  padding: 2rem;
+  padding: 40px;
   color: #666;
 }
 </style>

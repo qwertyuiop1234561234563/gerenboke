@@ -6,8 +6,13 @@
             <li @click="toggleTheme"><i :class=" !isDark ? 'iconfont icon-tianqi-qing':'iconfont icon-tianqi-ye' "></i></li>
         </ul>
     </div>
+    
     <div class="about">
-        <i class="iconfont icon-search"></i>
+        <label class="search">
+            <i class="iconfont icon-search" ></i>
+            <search/>
+        </label>
+        
         <img src="@\assets\img\touxiang.jpg" alt="头像">
         <i class="iconfont icon-menu"  @click="aboutMe"></i>
     </div>
@@ -23,7 +28,7 @@
 </div>
 </template>
 <script setup lang="ts" name="Head">
-import { RouterLink } from 'vue-router';
+import search from './search.vue';
 import { ref ,onMounted} from 'vue';
 const show = ref(false)
 const aboutMe = () => {
@@ -116,7 +121,7 @@ i{
     width: 100%;
     display: flex;
     justify-content: space-between;
-    line-height: 91px;
+    align-items: center;
 }
 li{
     list-style: none;
@@ -135,5 +140,16 @@ ul{
 img{
     border-radius: 50%;
     height: 60px;
+}
+.search{
+    display: flex;
+    position: relative;
+    right: 100px;
+}
+.icon-search{
+    position: absolute;
+    right: 77px;
+    z-index: 999;
+    top: 6px;
 }
 </style>

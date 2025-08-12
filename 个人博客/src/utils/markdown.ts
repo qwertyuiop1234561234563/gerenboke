@@ -16,7 +16,7 @@ declare module 'front-matter' {
         cover?: string
     }
 }
-interface ParsedMarkdown {
+export interface ParsedMarkdown {
     meta: {
         title: string;
         date: string;

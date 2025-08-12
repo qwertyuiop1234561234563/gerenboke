@@ -26,10 +26,12 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
+    "@types/lodash-es": "^4.17.12",
     "@types/marked": "^5.0.2",
     "@types/node": "^22.15.32",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.7.0",
+    "lodash-es": "^4.17.21",
     "npm-run-all2": "^8.0.4",
     "typescript": "~5.8.0",
     "vite": "npm:rolldown-vite@latest",
