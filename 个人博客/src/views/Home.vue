@@ -10,8 +10,6 @@
       :autoplay="{ delay: 2500, disableOnInteraction: false }"
       :navigation="true"
       :pagination="{ clickable: true }"
-      @swiper="onSwiper"
-      @slideChange="onSlideChange"
     >
       <swiper-slide><img src="@/assets/img/fg1.jpg" alt="风景1"></swiper-slide>
       <swiper-slide><img src="@/assets/img/fengjing2.jpg" alt="风景2"></swiper-slide>
@@ -41,13 +39,6 @@ import 'swiper/css/pagination'
 import 'swiper/css/autoplay'
 
 const modules = [Navigation, Pagination, Autoplay]
-
-const onSwiper = (swiper: any) => {
-  console.log(swiper)
-}
-const onSlideChange = () => {
-  console.log('slide change')
-}
 </script>
 
 <style>
@@ -83,6 +74,7 @@ const onSlideChange = () => {
   width: 1335px;
   height: 760px;
   /* margin-top: 90px; */
+  margin: 0 auto;
   position: relative;
 }
 
@@ -102,12 +94,9 @@ const onSlideChange = () => {
   display: flex;
 }
 .about img{
-  
     border-radius: 50%;
     height: 60px;
 }
-.bottom{
-  margin-left: 20px;
-}
+
 
 </style>

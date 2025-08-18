@@ -1,11 +1,14 @@
 <template>
     <div class="logo">
-        <i class="iconfont icon-crown"></i>
-        <h2>个人博客</h2>
+        <i class="iconfont icon-crown" ></i>
+        <h2 v-if="!fold">个人博客</h2>
     </div>
 </template>
 <script setup lang="ts" name="logo">
-
+import { storeToRefs } from 'pinia';
+import { useLayoutStore } from '@/stores/setting';
+const store = useLayoutStore()
+const {fold,refsh} = storeToRefs(store)
 </script>
 <style scoped>
 i{
@@ -26,9 +29,11 @@ i:hover{
     display: flex;
     padding: 10px;
     height: 100px;
-    width: 350px;
+    width: 185px;
     text-align: left;
-    margin-left: 20px;
     align-items: center;
+}
+h2{
+    transition: all 0.5s;
 }
 </style>

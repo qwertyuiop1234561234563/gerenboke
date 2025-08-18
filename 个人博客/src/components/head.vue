@@ -1,10 +1,10 @@
 <template>
 <div class="head">
     <div class="me">
-        <ul>
-            <li @click="aboutMe" id="person">个人简介</li>
+    <el-icon style="margin-right: 10px; transition: all 1s;" @click="changeIcon">
+            <component :is="fold? 'Expand':'Fold'"></component>
+        </el-icon>
             <li @click="toggleTheme"><i :class=" !isDark ? 'iconfont icon-tianqi-qing':'iconfont icon-tianqi-ye' "></i></li>
-        </ul>
     </div>
     
     <div class="about">
@@ -20,9 +20,24 @@
         <div v-if="show" class="about-me">
             <img src="@/assets/img/touxiang.jpg" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;">
             <h3>王继毅</h3>
-            <h4>男</h4>
-            <h4>微信号：w18781663225</h4>
-            <p>个人说明：暂无，想细聊请加我微信</p>
+            <el-row>
+    <el-col :span="24"><div class="grid-content ep-bg-purple-dark" />wechat:w18781663225</el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="12"><div class="grid-content ep-bg-purple" />🥰</el-col>
+    <el-col :span="12"><div class="grid-content ep-bg-purple-light" />😘</el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="8"><div class="grid-content ep-bg-purple" />😘</el-col>
+    <el-col :span="8"><div class="grid-content ep-bg-purple-light" />🥰</el-col>
+    <el-col :span="8"><div class="grid-content ep-bg-purple" />😘</el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="6"><div class="grid-content ep-bg-purple" />🥰</el-col>
+    <el-col :span="6"><div class="grid-content ep-bg-purple-light" />😘</el-col>
+    <el-col :span="6"><div class="grid-content ep-bg-purple" />🥰</el-col>
+    <el-col :span="6"><div class="grid-content ep-bg-purple-light" />😘</el-col>
+  </el-row>
         </div>
     </transition>
 </div>
@@ -30,6 +45,11 @@
 <script setup lang="ts" name="Head">
 import search from './search.vue';
 import { ref ,onMounted} from 'vue';
+import { storeToRefs } from 'pinia';
+import { useLayoutStore } from '@/stores/setting';
+const store = useLayoutStore()
+const {fold,refsh} = storeToRefs(store)
+const {changeIcon}=store
 const show = ref(false)
 const aboutMe = () => {
     show.value = true;
@@ -56,6 +76,7 @@ const toggleTheme = () => {
 const updateTheme = () => {
   document.documentElement.classList.toggle('dark', isDark.value)
 }
+
 </script>
 <style scoped>
 *{
@@ -122,10 +143,15 @@ i{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid blue;
 }
 li{
     list-style: none;
     cursor: pointer;
+}
+.me{
+    display: flex;
+   align-items: center;
 }
 .me li:hover{
     color: aquamarine;
@@ -151,5 +177,20 @@ img{
     right: 77px;
     z-index: 999;
     top: 6px;
+    color: #818181;
+}
+.el-row {
+  margin-bottom: 20px;
+}
+.el-row:last-child {
+  margin-bottom: 0;
+}
+.el-col {
+  border-radius: 4px;
+}
+
+.grid-content {
+  border-radius: 4px;
+  min-height: 36px;
 }
 </style>

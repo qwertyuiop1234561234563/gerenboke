@@ -1,13 +1,20 @@
 <template>
   <div id="app">
-    <div id="left">
+    <div id="left" :class="{fold:layoutStore.fold}">
       <Logo />
       <DaoHang />
     </div>
-    <div id="right">
-      <Head/>
-      <RouterView></RouterView>
-    </div>
+    <transition name="right-fade" mode="out-in">
+      <div
+        id="right"
+        :key="String(layoutStore.refsh)"
+      >
+        <Head />
+        <RouterView v-slot="{ Component }">
+          <component :is="Component" />
+        </RouterView>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -17,6 +24,16 @@ import Logo from './components/logo.vue';
 import DaoHang from './components/daoHang.vue';
 import Head from './components/head.vue';
 import '@/assets/main.css'
+import { useLayoutStore } from '@/stores/setting';
+const layoutStore = useLayoutStore()
+import { watch ,ref,nextTick} from 'vue';
+const flag = ref(true)
+watch(()=>layoutStore.refsh,()=>{
+    flag.value = false
+    setTimeout(()=>{
+        flag.value = true
+    }, 300) // 300ms 可根据动画时长调整
+})
 </script>
 
 <style scoped>
@@ -28,23 +45,28 @@ import '@/assets/main.css'
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  
   display: flex;
   min-height: 100vh; /* 确保全高 */
 }
-
-#left {
-  width: 350px;
-  background-color: #f0f0f031;
-  box-shadow: 1px 0 1px 1px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 1;
+#left{
+  background-color: rgb(255, 255, 255);
+  color: #363636;
 }
-
 #right {
   flex: 1;
-  position: relative;
+  width: 100%;
   overflow: hidden; /* 防止内容溢出 */
+  transition: margin-left 1s;
+}
+.fold + #right {
+margin-left: 60px; /* 折叠后的值 */
+}
+.scale {
+  transform: scale(0.98);
+  opacity: 0.7;
+}
+.fold{
+  width: 60px;
 }
 </style>
 
@@ -98,5 +120,29 @@ nav {
 main{
     background-color: var(--main-bg);
     color: var(--text-color);
+}
+
+/* 添加的过渡效果样式 */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+.fade-enter-to, .fade-leave-from {
+  opacity: 1;
+}
+
+/* 右侧切换动画 */
+.right-fade-enter-active, .right-fade-leave-active {
+  transition: opacity 0.5s, transform 0.5s;
+}
+.right-fade-enter-from, .right-fade-leave-to {
+  opacity: 0;
+  transform: translateX(10px);
+}
+.right-fade-enter-to, .right-fade-leave-from {
+  opacity: 1;
+  transform: translateX(0);
 }
 </style>

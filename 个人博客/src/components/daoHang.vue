@@ -1,14 +1,48 @@
 <template>
-    <div id="daoHang">
-       <div class="c1" ><RouterLink to="/":class="{'active':a==='home'}" @click="setActive('home')"><p><i class="iconfont icon-home"></i>首页</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-       <div class="c1" ><RouterLink to="/xiangmu":class="{'active':a==='xiangmu'}" @click="setActive('xiangmu')"><p><i class="iconfont icon-github-fill"></i>项目</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-       <div class="c1" ><RouterLink to="/boke":class="{'active':a==='boke'}" @click="setActive('boke')"><p><i class="iconfont icon-icon-test"></i>博客</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-       <div class="c1" ><RouterLink to="/about":class="{'active':a==='about'}" @click="setActive('about')"><p><i class="iconfont icon-menu"></i>其他</p><i class="iconfont icon-icon-test3"></i></RouterLink></div>
-    </div>
+    <el-col :span="12">
+      <el-menu
+        default-active="2"
+    class="el-menu-vertical-demo"
+    :collapse="fold"
+      >
+        <el-menu-item index="/" @click="goRoute">
+          
+            <el-icon><location /></el-icon>
+            <template #title>首页</template>
+        </el-menu-item>
+        <el-menu-item index="/xiangmu" @click="goRoute">
+          <el-icon><icon-menu /></el-icon>
+          <template #title>项目</template>
+        </el-menu-item>
+        <el-menu-item index="/boke" @click="goRoute">
+          <el-icon><document /></el-icon>
+          <template #title>博客</template>
+        </el-menu-item>
+        <el-menu-item index="/about" @click="goRoute">
+          <el-icon><setting /></el-icon>
+          <template #title>其他</template>
+        </el-menu-item>
+      </el-menu>
+    </el-col>
+
 </template>
 <script setup lang="ts" name="daoHang">
-import { RouterLink,RouterView } from 'vue-router';
+import {
+  Document,
+  Menu as IconMenu,
+  Location,
+  Setting,
+} from '@element-plus/icons-vue'
+import { RouterLink,RouterView,useRoute,useRouter } from 'vue-router';
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useLayoutStore } from '@/stores/setting';
+const store = useLayoutStore()
+const {fold,refsh} = storeToRefs(store)
+const router = useRouter()
+const goRoute = (to:any)=>{
+  router.push({path:to.index})
+}
 const a=ref('home')
 function setActive(e:string){
     a.value=e
@@ -21,45 +55,10 @@ function setActive(e:string){
         box-sizing: border-box;
     }
     
-    .active{
-        background-color: #0000007c;
-        color: #ffffff;
-    }
-    .c1{
-        display: flex;
-        justify-content: space-between;
-    }
-    a{
-        display: flex;
-        padding: 10px auto;
-        color: #6dcaff;
-        text-decoration: none;
-        text-align: left;
-        width: 350px;
-        height: 100px;
-        line-height: 100px;
-        justify-content: space-between;
-        align-items: center;
-        border-radius: 20px;
-    }
-    a:hover{
-        background-color: #0000007c;
-        color: #ffffff;
-    }
-    #daoHang{
-        width: 350px;
-        height: 400px;
-        background-color: #f0f0f000;
-        display: flex;
-        flex-wrap: wrap;
-    }
-    i{
-        display: inline-block;
-        margin-right: 20px;
-        font-size: 30px;
-        margin-left: 10px;
-    }
-    p{
-        display: inline-block;
-    }
+    
+    .el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+  
+}
 </style>

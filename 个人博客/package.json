@@ -11,7 +11,9 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "@highlightjs/vue-plugin": "^2.1.0",
+    "element-plus": "^2.10.7",
     "front-matter": "^4.0.2",
     "github-markdown-css": "^5.8.1",
     "gray-matter": "^4.0.3",

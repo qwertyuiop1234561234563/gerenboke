@@ -32,11 +32,11 @@ export const parseMarkdown = async (rawContent: string): Promise<ParsedMarkdown>
         const parsed = frontMatter<FrontMatterAttributes>(rawContent);
 
         // 调试日志
-        console.log('解析结果:', {
-            title: parsed.attributes.title,
-            date: parsed.attributes.date,
-            tags: parsed.attributes.tags
-        });
+        // console.log('解析结果:', {
+        //     title: parsed.attributes.title,
+        //     date: parsed.attributes.date,
+        //     tags: parsed.attributes.tags
+        // });
 
         return {
             meta: {
