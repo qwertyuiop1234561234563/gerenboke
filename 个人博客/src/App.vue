@@ -47,9 +47,11 @@ watch(()=>layoutStore.refsh,()=>{
   font-family: Avenir, Helvetica, Arial, sans-serif;
   display: flex;
   min-height: 100vh; /* 确保全高 */
+  height: 100%;
+  width: 100%;
 }
 #left{
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(182, 182, 182);
   color: #363636;
 }
 #right {

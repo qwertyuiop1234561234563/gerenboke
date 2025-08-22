@@ -1,11 +1,12 @@
 <template>
-    <el-col :span="12">
+    <el-col :span="12" >
       <el-menu
-        default-active="2"
+        :default-active="route.path"
     class="el-menu-vertical-demo"
     :collapse="fold"
+    background-color="rgb(182, 182, 182)"
       >
-        <el-menu-item index="/" @click="goRoute">
+        <el-menu-item index="/" @click="goRoute" >
           
             <el-icon><location /></el-icon>
             <template #title>首页</template>
@@ -40,6 +41,7 @@ import { useLayoutStore } from '@/stores/setting';
 const store = useLayoutStore()
 const {fold,refsh} = storeToRefs(store)
 const router = useRouter()
+const route = useRoute()
 const goRoute = (to:any)=>{
   router.push({path:to.index})
 }
@@ -54,8 +56,6 @@ function setActive(e:string){
         padding: 0;
         box-sizing: border-box;
     }
-    
-    
     .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;
